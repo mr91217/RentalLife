@@ -1,0 +1,106 @@
+#pa {
+    margin:auto;
+}
+
+.choiceBG {
+    background-color: beige;
+    width: 400px;
+    height: 50px;
+    padding-top: 10px;
+    margin:auto;
+    margin-bottom: 10px;
+
+}
+
+.choiceBG :hover{
+    background-color: beige;
+}
+
+.homePage {
+    background-color: aquamarine;
+    height: 300px;
+    padding-top: 70px;
+}
+
+.container {
+    margin-top: 40px;
+}
+
+#startGame {
+    background-color: blueviolet;
+    color: cornsilk;
+}
+
+.userinfo {
+    background-color: hotpink;
+    padding: 0vw 30vw;
+    text-align: center;
+}
+
+#userSubmit {
+    background-color:blue;
+    color: mintcream;
+    border-radius: 20%;
+    margin: 10px auto;
+}
+
+#inputlabel {
+    font-weight: bold;
+    font-size: 36px;
+    color: rebeccapurple;
+    font-style: italic;
+}
+
+#userName {
+    margin: 0 auto;
+}
+
+#pa {
+    position: absolute;
+    /* top: 20vw; */
+    left: 43vw;
+}
+
+#cb {
+    position: absolute;
+    /* top: 20vw; */
+    left: 52vw;
+}
+.table {
+    width: 100%;
+    border-collapse: collapse; /* 使表格的边框合并 */
+}
+
+.table th, .table td {
+    border: 1px solid #ddd; /* 为每个单元格添加边框 */
+    padding: 8px;           /* 添加一些内边距 */
+}
+
+.table th {
+    background-color: #f2f2f2; /* 为表头添加背景颜色 */
+    text-align: left;          /* 使表头文本左对齐 */
+}
+
+.table tr:nth-child(even) {
+    background-color: #f9f9f9; /* 为偶数行添加不同的背景颜色 */
+}
+
+.table tr:hover {
+    background-color: #ddd; /* 当鼠标悬停在行上时，改变背景颜色 */
+}
+
+.high-scores-title {
+    font-family: 'Grey Qo', sans-serif;
+    font-weight: bold; /* 根据需要调整粗细 */
+    color: green; /* 设置字体颜色 */
+    text-align: center; /* 文本居中 */
+    font-size: 70px;
+}
+
+.table{
+    font-family: 'Poppins';
+    font-weight: bold; /* 根据需要调整粗细 */
+    color: green; /* 设置字体颜色 */
+    text-align: center; /* 文本居中 */
+    font-size: 25px;
+}
