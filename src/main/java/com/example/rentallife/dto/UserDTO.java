@@ -1,10 +1,12 @@
 package com.example.rentallife.dto;
 
 
+import com.example.rentallife.entity.UserType;
 import com.example.rentallife.validator.FieldMatch;
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,6 +35,8 @@ public class UserDTO {
     private String password;
     @NotEmpty(message = "Required")
     private String matchingPassword;
+    @NotNull(message = "User type is required")
+    private UserType userType;
 
     public UserDTO(@NotEmpty String userName,
                    @Pattern(regexp = "[A-Za-z]+$", message = "Only alphabetic allowed") String firstName,
@@ -40,7 +44,8 @@ public class UserDTO {
                    @Email String email, String phone,
                    @Pattern(regexp = "[0-9]{5}$", message = "Zip code wrong format") String zip,
                    @NotEmpty(message = "Required") String password,
-            @NotEmpty(message = "Required") String matchingPassword) {
+            @NotEmpty(message = "Required") String matchingPassword,
+                   @NotEmpty UserType userType) {
         this.userName = userName;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -49,5 +54,6 @@ public class UserDTO {
         this.zip = zip;
         this.password = password;
         this.matchingPassword = matchingPassword;
+        this.userType = userType;
     }
 }

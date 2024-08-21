@@ -55,6 +55,13 @@
         <span th:if="${#fields.hasErrors('matchingPassword')}"
               th:errors="*{matchingPassword}"></span><br/>
     </div>
+    <div class="form-group">
+        <label for="userType">User Type</label>
+        <select id="userType" th:field="*{userType}" class="form-control">
+            <option value="LANDLORD">Landlord</option>
+            <option value="TENANT">Tenant</option>
+        </select>
+    </div>
     <input id="submitButton" class="btn btn-primary" type="submit"
            value="Submit" name="submitButton"/>
 </form>

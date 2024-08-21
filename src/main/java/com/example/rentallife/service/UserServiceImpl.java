@@ -1,8 +1,11 @@
 package com.example.rentallife.service;
 
 import com.example.rentallife.dto.UserDTO;
+import com.example.rentallife.entity.Property;
 import com.example.rentallife.entity.Role;
 import com.example.rentallife.entity.User;
+import com.example.rentallife.entity.UserType;
+import com.example.rentallife.repository.PropertyRepository;
 import com.example.rentallife.repository.UserRepository;
 import com.example.rentallife.security.UserPrincipal;
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +45,8 @@ public class UserServiceImpl implements UserService {
     private RoleService roleService;
     @Autowired
     private BCryptPasswordEncoder encoder;
+    @Autowired
+    private PropertyRepository propertyRepository;
 
     @Override
     @Transactional
@@ -74,11 +79,12 @@ user.getPassword(),   mapRolesToAuthorities(user.getRoles()));*/
 //        userRepository.save(user);
 //
 //    }
-    public void creat(UserDTO userDTO) {
+    public void creat(UserDTO userDTO, UserType userType) {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         User user = modelMapper.map(userDTO, User.class);
         user.setPassword(encoder.encode(user.getPassword()));
+        user.setUserType(userType);
 
         // 查找或创建角色
         Role userRole = roleService.findRoleByRoleName("ROLE_USER");
@@ -104,4 +110,15 @@ user.getPassword(),   mapRolesToAuthorities(user.getRoles()));*/
     {
         return userRepository.findUserByUserName(name);
     }
+
+    @Transactional
+    public void addPropertyToLandlord(User landlord, Property property) {
+        property.setLandlord(landlord);
+        propertyRepository.save(property);
+    }
+    @Override
+    public List<User> getAllLandlords() {
+        return userRepository.findByUserType(UserType.LANDLORD);
+    }
+
 }

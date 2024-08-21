@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Property Information</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <style type="text/css">
+        form{
+            display: flow;
+            margin: 50px;
+        }
+    </style>
+</head>
+<body>
+<h2>Property Information Form</h2>
+<form action="#" th:action="@{/property-process}" th:object="${propertyDTO}" method="post">
+    <div class="form-group">
+        <label for="address">Address</label>
+        <input id="address" type="text" th:field="*{address}" placeholder="Enter property address" class="form-control"/>
+        <span th:if="${#fields.hasErrors('address')}" th:errors="*{address}" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label for="city">City</label>
+        <input id="city" type="text" th:field="*{city}" placeholder="Enter city" class="form-control"/>
+        <span th:if="${#fields.hasErrors('city')}" th:errors="*{city}" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label for="state">State</label>
+        <input id="state" type="text" th:field="*{state}" placeholder="Enter state" class="form-control"/>
+        <span th:if="${#fields.hasErrors('state')}" th:errors="*{state}" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label for="zip">Zip Code</label>
+        <input id="zip" type="text" th:field="*{zip}" placeholder="Enter zip code" class="form-control"/>
+        <span th:if="${#fields.hasErrors('zip')}" th:errors="*{zip}" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label for="rooms">Number of Rooms</label>
+        <input type="number" id="rooms" th:field="*{rooms}" placeholder="Enter number of rooms" class="form-control"/>
+        <span th:if="${#fields.hasErrors('rooms')}" th:errors="*{rooms}" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label for="price">Price</label>
+        <input type="number" id="price" th:field="*{price}" placeholder="Enter price" class="form-control"/>
+        <span th:if="${#fields.hasErrors('price')}" th:errors="*{price}" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label for="landlord">Landlord</label>
+        <select id="landlord" th:field="*{landlordId}" class="form-control">
+            <option th:each="landlord : ${landlords}" th:value="${landlord.id}" th:text="${landlord.userName}">Select Landlord</option>
+        </select>
+        <span th:if="${#fields.hasErrors('landlordId')}" th:errors="*{landlordId}" class="text-danger"></span>
+    </div>
+    <input id="submitButton" class="btn btn-primary" type="submit" value="Submit"/>
+</form>
+</body>
+</html>

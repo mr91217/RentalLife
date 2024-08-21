@@ -23,7 +23,7 @@ shrink-to-fit=no">
 </nav>
 <div class="container">
     <form class="form-signin" method="post" action="#" th:action="@{/login}">
-        <h2 class="form-signin-heading">Please sign in</h2>
+        <h2 class="form-signin-heading">Please login in or <a th:href="@{/sign-up}">Sign Up</a></h2>
         <p>
             <label for="username" class="sr-only">Username</label>
             <input type="text" id="username"  name="username" class="form-control"
@@ -32,7 +32,7 @@ shrink-to-fit=no">
         <input type="password" id="password" name="password" class="form-control"
                placeholder="Password" required="">
     </p>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Login in</button>
     </form>
 </div>
 </body>

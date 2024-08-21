@@ -3,10 +3,10 @@ package com.example.rentallife.entity;
 import lombok.*;
 import jakarta.persistence.*;
 import java.util.Collection;
+import java.util.List;
 
-/**
- * @author Igor Adulyan
- */
+
+
 @Entity
 @Setter
 @Getter
@@ -24,12 +24,23 @@ public class User {
     private String phone;
     private String zip;
     private String password;
+
+    @Enumerated(EnumType.STRING)
+    private UserType userType;
+
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Collection <Role> roles;
+
+    @OneToMany(mappedBy = "landlord", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Property> propertiesAsLandlord;
+
+    @ManyToMany(mappedBy = "tenants", fetch = FetchType.LAZY)
+    private List<Property> propertiesAsTenant;
+
     public User(String userName, String firstName, String lastName, String email,
                 String phone, String zip, String password ) {
         this.userName = userName;
