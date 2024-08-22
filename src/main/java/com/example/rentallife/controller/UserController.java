@@ -2,12 +2,15 @@ package com.example.rentallife.controller;
 
 import com.example.rentallife.dto.PropertyDTO;
 import com.example.rentallife.dto.UserDTO;
+import com.example.rentallife.entity.Property;
 import com.example.rentallife.entity.User;
+import com.example.rentallife.entity.UserType;
 import com.example.rentallife.service.PropertyService;
 import com.example.rentallife.service.UserService;
 import com.example.rentallife.service.UserServiceImpl;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+//import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
@@ -15,6 +18,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+
+import org.springframework.security.core.Authentication;
 
 import java.util.List;
 
@@ -109,6 +114,38 @@ public class UserController {
         // 保存房产信息的逻辑
         propertyService.addProperty(propertyDTO);
         return "confirmation";
+    }
+    @GetMapping("/dashboard")
+    public String getDashboard(Model model, Authentication authentication) {
+        String currentUserName = authentication.getName();
+        User currentUser = userService.findUserByName(currentUserName);
+
+
+
+        // 添加空值检查
+        if (currentUser == null) {
+            // 如果找不到用户，重定向到登录页面或显示错误信息
+            return "redirect:/login?error=user_not_found";
+        }
+        System.out.println("Current User Type: " + currentUser.getUserType());
+
+        if (currentUser.getUserType() == UserType.LANDLORD) {
+            List<Property> properties = propertyService.getPropertiesByLandlord(currentUser);
+            model.addAttribute("properties", properties);
+            System.out.println("Properties found: " + properties.size());
+            return "landlord-dashboard";
+
+        } else if (currentUser.getUserType() == UserType.TENANT) {
+            // 这里处理租客的逻辑
+            return "home";
+        } else {
+            return "redirect:/access-denied";
+        }
+    }
+    @PostMapping("/assign-tenant")
+    public String assignTenant(@RequestParam("propertyId") Long propertyId, @RequestParam("tenantId") Long tenantId) {
+        propertyService.addTenantToProperty(propertyId, tenantId);
+        return "redirect:/property-details?propertyId=" + propertyId;
     }
 
 }

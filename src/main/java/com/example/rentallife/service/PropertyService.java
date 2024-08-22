@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class PropertyService {
 
@@ -35,6 +37,23 @@ public class PropertyService {
         property.setLandlord(landlord);
 
         // 保存物业信息
+        propertyRepository.save(property);
+    }
+    public User findUserByName(String userName) {
+        return userRepository.findByUserName(userName);
+    }
+    public List<Property> getPropertiesByLandlord(User landlord) {
+        return propertyRepository.findByLandlord(landlord);
+    }
+    @Transactional
+    public void addTenantToProperty(Long propertyId, Long tenantId) {
+        Property property = propertyRepository.findById(propertyId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid property ID"));
+
+        User tenant = userRepository.findById(tenantId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid tenant ID"));
+
+        property.getTenants().add(tenant);
         propertyRepository.save(property);
     }
 }

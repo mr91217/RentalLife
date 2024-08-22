@@ -48,13 +48,16 @@ public class SecurityConfiguration {
                         (auth) -> auth
                                 .requestMatchers("/", "/login*",
                                         "/css/*", "/js/*", "/sign-up", "/signup-process").permitAll()
-                                .requestMatchers("/home").hasAnyRole("USER", "ADMIN")
+                                //.requestMatchers("/home").hasAnyRole("USER", "ADMIN")
+                                .requestMatchers("/landlord-dashboard").hasRole("LANDLORD")  // 仅允许房东访问
+                                .requestMatchers("/home").hasRole("TENANT")  // 仅允许租客访问
                                 .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/login") // should point to login page
-                        .successForwardUrl("/home") // must be in order thymeleaf security
+                        .defaultSuccessUrl("/dashboard", true)  // 根据角色重定向到不同的页面
+                        //.successForwardUrl("/home") // must be in order thymeleaf security
                         .permitAll()
                 ).logout(
                         logout -> logout
