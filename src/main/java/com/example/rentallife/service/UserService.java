@@ -16,5 +16,6 @@ public interface UserService extends UserDetailsService {
     public User findUserByEmail(String email);
     public User findUserByName(String name);
     List<User> getAllLandlords();
+    List<User> getAllTenants();
 
 }

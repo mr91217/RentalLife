@@ -21,7 +21,11 @@ import org.springframework.web.bind.annotation.*;
 
 import org.springframework.security.core.Authentication;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Controller
@@ -113,7 +117,7 @@ public class UserController {
         }
         // 保存房产信息的逻辑
         propertyService.addProperty(propertyDTO);
-        return "confirmation";
+        return "redirect:/assign-tenant";
     }
     @GetMapping("/dashboard")
     public String getDashboard(Model model, Authentication authentication) {
@@ -131,7 +135,21 @@ public class UserController {
 
         if (currentUser.getUserType() == UserType.LANDLORD) {
             List<Property> properties = propertyService.getPropertiesByLandlord(currentUser);
+            // 创建一个 Map，将房产ID与对应的租客列表关联起来
+            Map<Long, List<User>> propertyTenantsMap = new HashMap<>();
+            for (Property property : properties) {
+                List<User> tenants = property.getTenants();  // 假设你在 Property 类中有 getTenants 方法
+                if (tenants != null) {
+                    // 对租客列表去重
+                    tenants = tenants.stream().distinct().collect(Collectors.toList());
+                } else {
+                    tenants = new ArrayList<>();
+                }
+                propertyTenantsMap.put(property.getId(), tenants);
+            }
+            // 将 propertyTenantsMap 添加到 model 中
             model.addAttribute("properties", properties);
+            model.addAttribute("propertyTenantsMap", propertyTenantsMap);
             System.out.println("Properties found: " + properties.size());
             return "landlord-dashboard";
 
@@ -142,10 +160,16 @@ public class UserController {
             return "redirect:/access-denied";
         }
     }
+    @GetMapping("/assign-tenant")
+    public String showAssignTenantForm(Model model) {
+        model.addAttribute("properties", propertyService.getAllProperties());
+        model.addAttribute("tenants", userService.getAllTenants());
+        return "assign-tenant";
+    }
     @PostMapping("/assign-tenant")
     public String assignTenant(@RequestParam("propertyId") Long propertyId, @RequestParam("tenantId") Long tenantId) {
         propertyService.addTenantToProperty(propertyId, tenantId);
-        return "redirect:/property-details?propertyId=" + propertyId;
+        return "redirect:/dashboard";
     }
 
 }

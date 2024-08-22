@@ -6,7 +6,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Grey+Qo&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap">
-
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css">
 </head>
 <header>
@@ -30,7 +29,7 @@
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             <li><a class="dropdown-item" th:href="property-form">Add Property</a></li>
-                            <li><a class="dropdown-item" href="#">Files</a></li>
+                            <li><a class="dropdown-item" th:href="assign-tenant">Assign Tenant</a></li>
                             <li><a class="dropdown-item" href="#">Settings</a></li>
                             <li><a class="dropdown-item" href="#">Help</a></li>
                         </ul>
@@ -43,7 +42,7 @@
 <body>
 <h2>Welcome, Landlord!</h2>
 <div>
-    <h3>Your Properties</h3>
+    <h3>Your Properties and Tenants</h3>
     <table class="table table-striped">
         <thead>
         <tr>
@@ -53,36 +52,50 @@
             <th>Zip</th>
             <th>Rooms</th>
             <th>Price</th>
+            <th>Tenants</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="property : ${properties}">
-            <td th:text="${property.address}">123 Main St</td>
-            <td th:text="${property.city}">Springfield</td>
-            <td th:text="${property.state}">IL</td>
-            <td th:text="${property.zip}">62704</td>
-            <td th:text="${property.rooms}">3</td>
-            <td th:text="${property.price}">$1000</td>
+            <td th:text="${property.address}"></td>
+            <td th:text="${property.city}"></td>
+            <td th:text="${property.state}"></td>
+            <td th:text="${property.zip}"></td>
+            <td th:text="${property.rooms}"></td>
+            <td th:text="${property.price}"></td>
+            <td>
+
+                <ul>
+                    <li th:if="${#lists.isEmpty(propertyTenantsMap[property.id])}">
+                        No tenants assigned
+                    </li>
+                    <li th:each="tenant : ${propertyTenantsMap[property.id]}"
+                        th:unless="${#lists.isEmpty(propertyTenantsMap[property.id])}"
+                        th:text="${tenant.firstName + ' ' + tenant.lastName}">
+                    </li>
+                </ul>
+            </td>
         </tr>
         </tbody>
     </table>
 </div>
 <footer>
-    <table style="width:50%"> <tr>
-        <td>
-            <strong>Logged user: <span sec:authentication="name"></span></strong> <br>
-            <strong>Roles: <span sec:authentication="principal.authorities"></span></strong>
-        </td>
-        <td>
-            <br><br>
-            <form action=# th:action="@{/logout}" method="post">
-                <input class="btn" id="submitButton" type="submit" value="Logout" /> </form>
-            <br>
-        </td>
-    </tr> </table>
+    <table style="width:50%">
+        <tr>
+            <td>
+                <strong>Logged user: <span sec:authentication="name"></span></strong> <br>
+                <strong>Roles: <span sec:authentication="principal.authorities"></span></strong>
+            </td>
+            <td>
+                <br><br>
+                <form action=# th:action="@{/logout}" method="post">
+                    <input class="btn" id="submitButton" type="submit" value="Logout" />
+                </form>
+                <br>
+            </td>
+        </tr>
+    </table>
 </footer>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
-
 </body>
 </html>

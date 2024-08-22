@@ -56,4 +56,7 @@ public class PropertyService {
         property.getTenants().add(tenant);
         propertyRepository.save(property);
     }
+    public List<Property> getAllProperties() {
+        return propertyRepository.findAll();
+    }
 }

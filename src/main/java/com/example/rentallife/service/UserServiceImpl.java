@@ -120,5 +120,8 @@ user.getPassword(),   mapRolesToAuthorities(user.getRoles()));*/
     public List<User> getAllLandlords() {
         return userRepository.findByUserType(UserType.LANDLORD);
     }
+    public List<User> getAllTenants() {
+        return userRepository.findByUserType(UserType.TENANT);
+    }
 
 }
