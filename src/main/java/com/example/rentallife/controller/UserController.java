@@ -172,4 +172,17 @@ public class UserController {
         return "redirect:/dashboard";
     }
 
+    @PostMapping("/delete-property/{id}")
+    public String deleteProperty(@PathVariable("id") Long propertyId, Authentication authentication) {
+        User currentUser = userService.findUserByName(authentication.getName());
+        Property property = propertyService.findPropertyById(propertyId);
+
+        if (property.getLandlord().getId().equals(currentUser.getId())) {
+            propertyService.deletePropertyById(propertyId);
+            return "redirect:/dashboard";
+        } else {
+            return "redirect:/access-denied"; // 如果用户不是物业的所有者，重定向到拒绝访问页面
+        }
+    }
+
 }

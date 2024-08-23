@@ -11,4 +11,5 @@ import java.util.List;
 public interface PropertyRepository extends JpaRepository<Property, Long> {
     // 根据房东查询物业的方法
     List<Property> findByLandlord(User landlord);
+
 }

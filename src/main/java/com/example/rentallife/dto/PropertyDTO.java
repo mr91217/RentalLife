@@ -15,10 +15,11 @@ public class PropertyDTO {
     private String zip;
     private int rooms;
     private double price;
+    private String term;
     private long landlordId;
 
     // Constructor with fields
-    public PropertyDTO(long id, String address, String city, String state, String zip, int rooms, double price, long landlordId) {
+    public PropertyDTO(long id, String address, String city, String state, String zip, int rooms, double price, String term, long landlordId) {
         this.id = id;
         this.address = address;
         this.city = city;
@@ -26,6 +27,7 @@ public class PropertyDTO {
         this.zip = zip;
         this.rooms = rooms;
         this.price = price;
+        this.term = term;
         this.landlordId = landlordId;
     }
 }

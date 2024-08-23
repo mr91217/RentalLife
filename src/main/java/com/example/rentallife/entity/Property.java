@@ -21,11 +21,20 @@ public class Property {
     private String zip;
     private int rooms;
     private double price;
+    String term;
 
     // 连接到房东
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "landlord_id")
+    @JoinColumn(name = "landlord_id", nullable = false)
     private User landlord;
+
+    public User getLandlord() {
+        return landlord;
+    }
+
+    public void setLandlord(User landlord) {
+        this.landlord = landlord;
+    }
 
     // 连接到租客
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -34,13 +43,14 @@ public class Property {
             inverseJoinColumns = @JoinColumn(name = "tenant_id"))
     private List<User> tenants;
 
-    public Property(String address, String city, String state, String zip, int rooms, double price, User landlord) {
+    public Property(String address, String city, String state, String zip, int rooms, double price, String term, User landlord) {
         this.address = address;
         this.city = city;
         this.state = state;
         this.zip = zip;
         this.rooms = rooms;
         this.price = price;
+        this.term = term;
         this.landlord = landlord;
     }
 }

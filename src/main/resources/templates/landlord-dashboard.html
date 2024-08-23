@@ -52,7 +52,9 @@
             <th>Zip</th>
             <th>Rooms</th>
             <th>Price</th>
+            <th>Term</th>
             <th>Tenants</th>
+            <th>Management</th>
         </tr>
         </thead>
         <tbody>
@@ -63,6 +65,7 @@
             <td th:text="${property.zip}"></td>
             <td th:text="${property.rooms}"></td>
             <td th:text="${property.price}"></td>
+            <td th:text="${property.term}"></td>
             <td>
 
                 <ul>
@@ -74,6 +77,11 @@
                         th:text="${tenant.firstName + ' ' + tenant.lastName}">
                     </li>
                 </ul>
+            </td>
+            <td>
+                <form th:action="@{/delete-property/{id}(id=${property.id})}" method="post">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
             </td>
         </tr>
         </tbody>

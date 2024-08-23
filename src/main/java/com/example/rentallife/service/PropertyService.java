@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PropertyService {
@@ -34,6 +35,7 @@ public class PropertyService {
         property.setZip(propertyDTO.getZip());
         property.setRooms(propertyDTO.getRooms());
         property.setPrice(propertyDTO.getPrice());
+        property.setTerm(propertyDTO.getTerm());
         property.setLandlord(landlord);
 
         // 保存物业信息
@@ -58,5 +60,17 @@ public class PropertyService {
     }
     public List<Property> getAllProperties() {
         return propertyRepository.findAll();
+    }
+    public Property findPropertyById(Long id) {
+        Optional<Property> propertyOptional = propertyRepository.findById(id);
+        if (propertyOptional.isPresent()) {
+            return propertyOptional.get();
+        } else {
+            throw new IllegalArgumentException("Property not found with id: " + id);
+        }
+    }
+    @Transactional
+    public void deletePropertyById(Long propertyId) {
+        propertyRepository.deleteById(propertyId);
     }
 }

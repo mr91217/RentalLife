@@ -45,6 +45,11 @@
         <span th:if="${#fields.hasErrors('price')}" th:errors="*{price}" class="text-danger"></span>
     </div>
     <div class="form-group">
+        <label for="term">Lease Term</label>
+        <input id="term" type="text" th:field="*{term}" placeholder="Enter lease term" class="form-control"/>
+        <span th:if="${#fields.hasErrors('term')}" th:errors="*{term}" class="text-danger"></span>
+    </div>
+    <div class="form-group">
         <label for="landlord">Landlord</label>
         <select id="landlord" th:field="*{landlordId}" class="form-control">
             <option th:each="landlord : ${landlords}" th:value="${landlord.id}" th:text="${landlord.userName}">Select Landlord</option>
