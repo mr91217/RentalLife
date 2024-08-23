@@ -184,5 +184,53 @@ public class UserController {
             return "redirect:/access-denied"; // 如果用户不是物业的所有者，重定向到拒绝访问页面
         }
     }
+    @GetMapping("/edit-property/{id}")
+    public String showEditPropertyForm(@PathVariable("id") Long propertyId, Model model, Authentication authentication) {
+        User currentUser = userService.findUserByName(authentication.getName());
+        Property property = propertyService.findPropertyById(propertyId);
+
+        if (property.getLandlord().getId().equals(currentUser.getId())) {
+            model.addAttribute("property", property);
+            model.addAttribute("tenants", userService.getAllTenants()); // 获取所有租客
+            return "edit-property";
+        } else {
+            return "redirect:/access-denied"; // 如果用户不是物业的所有者，重定向到拒绝访问页面
+        }
+    }
+    @PostMapping("/update-property/{id}")
+    public String updateProperty(@PathVariable("id") Long propertyId,
+                                 @RequestParam("address") String address,
+                                 @RequestParam("city") String city,
+                                 @RequestParam("state") String state,
+                                 @RequestParam("zip") String zip,
+                                 @RequestParam("rooms") int rooms,
+                                 @RequestParam("price") double price,
+                                 @RequestParam("term") String term,
+                                 @RequestParam("tenantId") Long tenantId,
+                                 Authentication authentication) {
+        User currentUser = userService.findUserByName(authentication.getName());
+        Property property = propertyService.findPropertyById(propertyId);
+
+        if (property.getLandlord().getId().equals(currentUser.getId())) {
+            // 更新物业信息
+            property.setAddress(address);
+            property.setCity(city);
+            property.setState(state);
+            property.setZip(zip);
+            property.setRooms(rooms);
+            property.setPrice(price);
+            property.setTerm(term);
+
+            // 重新分配租客
+            User newTenant = userService.findUserById(tenantId); // 确保你有这个方法
+            property.getTenants().clear(); // 清空现有租客列表
+            property.getTenants().add(newTenant); // 添加新租客
+
+            propertyService.saveProperty(property); // 保存修改后的物业信息
+            return "redirect:/dashboard"; // 更新成功后重定向到仪表板
+        } else {
+            return "redirect:/access-denied"; // 如果用户不是物业的所有者，重定向到拒绝访问页面
+        }
+    }
 
 }

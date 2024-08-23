@@ -123,5 +123,10 @@ user.getPassword(),   mapRolesToAuthorities(user.getRoles()));*/
     public List<User> getAllTenants() {
         return userRepository.findByUserType(UserType.TENANT);
     }
+    @Override
+    public User findUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with id: " + id));
+    }
 
 }

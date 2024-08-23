@@ -54,6 +54,7 @@
             <th>Price</th>
             <th>Term</th>
             <th>Tenants</th>
+            <th>Modify</th>
             <th>Management</th>
         </tr>
         </thead>
@@ -77,6 +78,9 @@
                         th:text="${tenant.firstName + ' ' + tenant.lastName}">
                     </li>
                 </ul>
+            </td>
+            <td>
+                <a th:href="@{/edit-property/{id}(id=${property.id})}" class="btn btn-sm btn-warning">Edit</a>
             </td>
             <td>
                 <form th:action="@{/delete-property/{id}(id=${property.id})}" method="post">

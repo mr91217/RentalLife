@@ -73,4 +73,7 @@ public class PropertyService {
     public void deletePropertyById(Long propertyId) {
         propertyRepository.deleteById(propertyId);
     }
+    public void saveProperty(Property property) {
+        propertyRepository.save(property);
+    }
 }
