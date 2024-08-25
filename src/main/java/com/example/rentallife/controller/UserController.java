@@ -21,10 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import org.springframework.security.core.Authentication;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -81,11 +78,32 @@ public class UserController {
         log.info("Login page displayed");
         return "login";
     }
+
     @RequestMapping("/home")
-    public String getHome()
-    {
-        log.info("home page displayed");
-        return "home";
+    public String getHome(Authentication authentication) {
+        // 获取当前用户名
+        String currentUserName = authentication.getName();
+        // 查找当前用户
+        User currentUser = userService.findUserByName(currentUserName);
+
+        // 添加空值检查
+        if (currentUser == null) {
+            // 如果找不到用户，重定向到登录页面或显示错误信息
+            return "redirect:/login?error=user_not_found";
+        }
+
+        // 根据用户类型进行重定向
+        if (currentUser.getUserType() == UserType.LANDLORD) {
+            // 如果用户是房东，重定向到 dashboard
+            return "redirect:/dashboard";
+        } else if (currentUser.getUserType() == UserType.TENANT) {
+            // 如果用户是租客，返回 home 页面
+            log.info("Home page displayed");
+            return "home";
+        } else {
+            // 如果用户的类型不匹配，重定向到拒绝访问页面
+            return "redirect:/access-denied";
+        }
     }
     @GetMapping("/claim")
     public String showClaimPage() {
@@ -99,11 +117,11 @@ public class UserController {
     private UserService userService;
     @GetMapping("/property-form")
     public String showPropertyForm(Model model) {
-        // 获取所有房东用户
-        List<User> landlords = userService.getAllLandlords();
-
-        // 将房东列表添加到模型中
-        model.addAttribute("landlords", landlords);
+//        // 获取所有房东用户
+//        List<User> landlords = userService.getAllLandlords();
+//
+//        // 将房东列表添加到模型中
+//        model.addAttribute("landlords", landlords);
 
         // 初始化 PropertyDTO 对象并设置默认值
         PropertyDTO propertyDTO = new PropertyDTO();
@@ -111,10 +129,15 @@ public class UserController {
         return "property-form";
     }
     @PostMapping("/property-process")
-    public String processProperty(@Valid @ModelAttribute("propertyDTO") PropertyDTO propertyDTO, BindingResult bindingResult) {
+    public String processProperty(@Valid @ModelAttribute("propertyDTO") PropertyDTO propertyDTO, BindingResult bindingResult, Authentication authentication) {
         if (bindingResult.hasErrors()) {
             return "property-form";
         }
+        // 获取当前登录的房东用户
+        User currentLandlord = userService.findUserByName(authentication.getName());
+
+        // 将当前房东设置为物业的房东
+        propertyDTO.setLandlordId(currentLandlord.getId());
         // 保存房产信息的逻辑
         propertyService.addProperty(propertyDTO);
         return "redirect:/assign-tenant";
@@ -161,14 +184,25 @@ public class UserController {
         }
     }
     @GetMapping("/assign-tenant")
-    public String showAssignTenantForm(Model model) {
-        model.addAttribute("properties", propertyService.getAllProperties());
+    public String showAssignTenantForm(Model model, Authentication authentication) {
+        User currentUser = userService.findUserByName(authentication.getName());
+
+        // 获取当前房东的房产列表
+        List<Property> landlordProperties = propertyService.getPropertiesByLandlord(currentUser);
+
+        model.addAttribute("properties", landlordProperties);
         model.addAttribute("tenants", userService.getAllTenants());
         return "assign-tenant";
     }
     @PostMapping("/assign-tenant")
-    public String assignTenant(@RequestParam("propertyId") Long propertyId, @RequestParam("tenantId") Long tenantId) {
-        propertyService.addTenantToProperty(propertyId, tenantId);
+    public String assignTenant(@RequestParam("propertyId") Long propertyId, @RequestParam(value = "tenantId", required = false) Long tenantId) {
+        if (tenantId != null) {
+            // 如果指定了租户ID，分配租户
+            propertyService.addTenantToProperty(propertyId, tenantId);
+        } else {
+            // 如果tenantId是null，移除当前所有租户
+            propertyService.removeTenantsFromProperty(propertyId);
+        }
         return "redirect:/dashboard";
     }
 
@@ -205,8 +239,8 @@ public class UserController {
                                  @RequestParam("zip") String zip,
                                  @RequestParam("rooms") int rooms,
                                  @RequestParam("price") double price,
-                                 @RequestParam("term") String term,
-                                 @RequestParam("tenantId") Long tenantId,
+                                 @RequestParam(value = "term", required = false) String term,
+                                 @RequestParam(value = "tenantId", required = false) Long tenantId, // 允许tenantId为null,
                                  Authentication authentication) {
         User currentUser = userService.findUserByName(authentication.getName());
         Property property = propertyService.findPropertyById(propertyId);
@@ -221,10 +255,13 @@ public class UserController {
             property.setPrice(price);
             property.setTerm(term);
 
-            // 重新分配租客
-            User newTenant = userService.findUserById(tenantId); // 确保你有这个方法
-            property.getTenants().clear(); // 清空现有租客列表
-            property.getTenants().add(newTenant); // 添加新租客
+            // 重新分配租户
+            if (tenantId != null) {
+                User newTenant = userService.findUserById(tenantId);
+                property.setTenants(Collections.singletonList(newTenant)); // 单一租户
+            } else {
+                property.setTenants(new ArrayList<>()); // 移除所有租户
+            }
 
             propertyService.saveProperty(property); // 保存修改后的物业信息
             return "redirect:/dashboard"; // 更新成功后重定向到仪表板

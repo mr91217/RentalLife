@@ -40,6 +40,7 @@
         <div class="form-group">
             <label for="tenant">Re-Assign Tenant:</label>
             <select id="tenant" name="tenantId" class="form-control">
+                <option value="" th:text="'No tenant assigned'"></option> <!-- 空选项 -->
                 <option th:each="tenant : ${tenants}" th:value="${tenant.id}" th:text="${tenant.firstName + ' ' + tenant.lastName}"></option>
             </select>
         </div>

@@ -49,13 +49,13 @@
         <input id="term" type="text" th:field="*{term}" placeholder="Enter lease term" class="form-control"/>
         <span th:if="${#fields.hasErrors('term')}" th:errors="*{term}" class="text-danger"></span>
     </div>
-    <div class="form-group">
-        <label for="landlord">Landlord</label>
-        <select id="landlord" th:field="*{landlordId}" class="form-control">
-            <option th:each="landlord : ${landlords}" th:value="${landlord.id}" th:text="${landlord.userName}">Select Landlord</option>
-        </select>
-        <span th:if="${#fields.hasErrors('landlordId')}" th:errors="*{landlordId}" class="text-danger"></span>
-    </div>
+<!--    <div class="form-group">-->
+<!--        <label for="landlord">Landlord</label>-->
+<!--        <select id="landlord" th:field="*{landlordId}" class="form-control">-->
+<!--            <option th:each="landlord : ${landlords}" th:value="${landlord.id}" th:text="${landlord.userName}">Select Landlord</option>-->
+<!--        </select>-->
+<!--        <span th:if="${#fields.hasErrors('landlordId')}" th:errors="*{landlordId}" class="text-danger"></span>-->
+<!--    </div>-->
 
     <input id="submitButton" class="btn btn-primary" type="submit" value="Submit"/>
 </form>

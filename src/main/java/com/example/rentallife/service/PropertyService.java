@@ -5,10 +5,12 @@ import com.example.rentallife.entity.Property;
 import com.example.rentallife.entity.User;
 import com.example.rentallife.repository.PropertyRepository;
 import com.example.rentallife.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -74,6 +76,11 @@ public class PropertyService {
         propertyRepository.deleteById(propertyId);
     }
     public void saveProperty(Property property) {
+        propertyRepository.save(property);
+    }
+    public void removeTenantsFromProperty(Long propertyId) {
+        Property property = propertyRepository.findById(propertyId).orElseThrow(() -> new EntityNotFoundException("Property not found"));
+        property.setTenants(new ArrayList<>()); // 移除所有租户
         propertyRepository.save(property);
     }
 }
