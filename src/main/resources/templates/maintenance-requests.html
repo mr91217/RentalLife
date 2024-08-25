@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Maintenance Requests</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <h2>Maintenance Requests</h2>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Request Type</th>
+            <th>Description</th>
+            <th>Submitted At</th>
+            <th>Status</th>
+            <th>Tenant</th>
+            <th>Property Address</th>
+            <th>Edit Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="request : ${requests}">
+            <td th:text="${request.requestType}">Request Type</td>
+            <td th:text="${request.description}">Description</td>
+            <td th:text="${request.submittedAt}">Submitted At</td>
+            <td th:text="${request.status}">Status</td>
+            <td th:text="${request.tenant.firstName + ' ' + request.tenant.lastName}">Tenant</td>
+            <td th:text="${request.property.address}">Property Address</td>
+            <td>
+                <form th:action="@{/update-request-status}" method="post">
+                    <input type="hidden" name="requestId" th:value="${request.id}" />
+                    <select name="status" class="form-control">
+                        <option th:each="status : ${T(com.example.rentallife.entity.RequestStatus).values()}"
+                                th:value="${status}" th:text="${status}"></option>
+                    </select>
+                    <button type="submit" class="btn btn-primary">Edit Status</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

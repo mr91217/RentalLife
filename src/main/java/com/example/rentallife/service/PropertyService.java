@@ -83,4 +83,8 @@ public class PropertyService {
         property.setTenants(new ArrayList<>()); // 移除所有租户
         propertyRepository.save(property);
     }
+
+    public List<Property> getPropertiesByTenant(User tenant) {
+        return propertyRepository.findByTenantsContains(tenant);
+    }
 }

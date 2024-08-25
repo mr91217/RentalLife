@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Submit Maintenance Request</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+<h2>Submit Maintenance or Replacement Request</h2>
+<form action="#" th:action="@{/submit-request}" method="post">
+    <div class="form-group">
+        <label for="property">Select Property:</label>
+        <select id="property" name="property.id" class="form-control">
+            <option th:each="property : ${properties}" th:value="${property.id}" th:text="${property.address}"></option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="requestType">Request Type:</label>
+        <select id="requestType" name="requestType" class="form-control">
+            <option value="Maintenance">Maintenance</option>
+            <option value="Replacement">Replacement</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" class="form-control"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit Request</button>
+</form>
+</body>
+</html>

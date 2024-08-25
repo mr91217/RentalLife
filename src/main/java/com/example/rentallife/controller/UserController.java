@@ -2,9 +2,8 @@ package com.example.rentallife.controller;
 
 import com.example.rentallife.dto.PropertyDTO;
 import com.example.rentallife.dto.UserDTO;
-import com.example.rentallife.entity.Property;
-import com.example.rentallife.entity.User;
-import com.example.rentallife.entity.UserType;
+import com.example.rentallife.entity.*;
+import com.example.rentallife.service.MaintenanceRequestService;
 import com.example.rentallife.service.PropertyService;
 import com.example.rentallife.service.UserService;
 import com.example.rentallife.service.UserServiceImpl;
@@ -21,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import org.springframework.security.core.Authentication;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -268,6 +268,48 @@ public class UserController {
         } else {
             return "redirect:/access-denied"; // 如果用户不是物业的所有者，重定向到拒绝访问页面
         }
+    }
+    @Autowired
+    private MaintenanceRequestService maintenanceRequestService;
+
+    @GetMapping("/submit-request")
+    public String showSubmitRequestForm(Model model, Authentication authentication) {
+        User currentUser = userService.findUserByName(authentication.getName());
+        List<Property> properties = propertyService.getPropertiesByTenant(currentUser);
+
+        model.addAttribute("properties", properties);
+        model.addAttribute("maintenanceRequest", new MaintenanceRequest());
+        return "submit-request-form";
+    }
+
+    @PostMapping("/submit-request")
+    public String submitRequest(MaintenanceRequest maintenanceRequest, Authentication authentication) {
+        User currentUser = userService.findUserByName(authentication.getName());
+        maintenanceRequest.setTenant(currentUser);
+        maintenanceRequest.setSubmittedAt(LocalDateTime.now());
+        maintenanceRequestService.submitRequest(maintenanceRequest);
+        return "redirect:/home";
+    }
+    @GetMapping("/maintenance-requests")
+    public String showMaintenanceRequests(Model model, Authentication authentication) {
+        User currentUser = userService.findUserByName(authentication.getName());
+        List<MaintenanceRequest> requests = maintenanceRequestService.getRequestsForLandlord(currentUser);
+        model.addAttribute("requests", requests);
+        return "maintenance-requests";
+    }
+    @PostMapping("/update-request-status")
+    public String updateRequestStatus(@RequestParam("requestId") Long requestId, @RequestParam("status") RequestStatus status) {
+        MaintenanceRequest request = maintenanceRequestService.findById(requestId);
+        request.setStatus(status);
+        maintenanceRequestService.save(request);
+        return "redirect:/maintenance-requests"; // 更改状态后重定向回请求列表页面
+    }
+    @GetMapping("/maintenance-status")
+    public String showMaintenanceStatus(Model model, Authentication authentication) {
+        User currentUser = userService.findUserByName(authentication.getName());
+        List<MaintenanceRequest> requests = maintenanceRequestService.getRequestsForTenant(currentUser);
+        model.addAttribute("requests", requests);
+        return "maintenance-status-t";
     }
 
 }
