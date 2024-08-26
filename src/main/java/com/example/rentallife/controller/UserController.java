@@ -258,7 +258,7 @@ public class UserController {
             // 重新分配租户
             if (tenantId != null) {
                 User newTenant = userService.findUserById(tenantId);
-                property.setTenants(Collections.singletonList(newTenant)); // 单一租户
+                property.setTenants(new ArrayList<>(Collections.singletonList(newTenant))); // 单一租户
             } else {
                 property.setTenants(new ArrayList<>()); // 移除所有租户
             }
