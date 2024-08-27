@@ -19,6 +19,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,6 +48,8 @@ public class UserServiceImpl implements UserService {
     private BCryptPasswordEncoder encoder;
     @Autowired
     private PropertyRepository propertyRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
@@ -128,5 +131,9 @@ user.getPassword(),   mapRolesToAuthorities(user.getRoles()));*/
         return userRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with id: " + id));
     }
+    public User saveUser(User user) {
+        return userRepository.save(user);
+    }
+
 
 }

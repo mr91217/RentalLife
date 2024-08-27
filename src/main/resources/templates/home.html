@@ -20,25 +20,26 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNavDropdown">
                 <ul class="navbar-nav ml-auto">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" th:href="@{/claim}">Claim</a>
-                    </li>
+
                     <li class="nav-item">
                         <a class="nav-link" th:href="@{/submit-request}">Submit Request</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" th:href="@{/payment}">Payment</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/tenant-payment-history}">Payment History</a>
+                    </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             More
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                            <li><a class="dropdown-item" th:href="property-form">Add Property</a></li>
+<!--                            <li><a class="dropdown-item" th:href="property-form">Add Property</a></li>-->
                             <li><a class="dropdown-item" th:href="maintenance-status">Maintenance Status</a></li>
                             <li><a class="dropdown-item" href="#">Files</a></li>
-                            <li><a class="dropdown-item" href="#">Settings</a></li>
-                            <li><a class="dropdown-item" href="#">Help</a></li>
+                            <li><a class="dropdown-item" th:href="@{/edit-profile}">Settings</a></li>
+                            <li><a class="dropdown-item" th:href="help">Help</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -49,20 +50,21 @@
 </header>
 
 <div>
-    <h2>Success!!!</h2>
+    <h2>Welcome, <span sec:authentication="principal.name"></span>!</h2>
     <!--YOU CAN SPECIFY VISIBLE CONTENT BASED ON USER ROLE-->
-    <div sec:authorize="isAuthenticated()">
-        This content is only shown to authenticated users.
-    </div>
-    <div sec:authorize="hasRole('ROLE_ADMIN')">
-        This content is only shown to administrators. </div>
-    <div sec:authorize="hasRole('ROLE_USER')"> This content is only shown to users.
-    </div> </div>
+<!--    <div sec:authorize="isAuthenticated()">-->
+<!--        This content is only shown to authenticated users.-->
+<!--    </div>-->
+<!--    <div sec:authorize="hasRole('ROLE_ADMIN')">-->
+<!--        This content is only shown to administrators. </div>-->
+<!--    <div sec:authorize="hasRole('ROLE_USER')"> This content is only shown to users.-->
+<!--    </div> -->
+</div>
 
 <table style="width:50%"> <tr>
     <td>
-        <strong>Logged user: <span sec:authentication="name"></span></strong> <br>
-        <strong>Roles: <span sec:authentication="principal.authorities"></span></strong>
+<!--        <strong>Logged user: <span sec:authentication="name"></span></strong> <br>-->
+<!--        <strong>Roles: <span sec:authentication="principal.authorities"></span></strong>-->
     </td>
     <td>
     <br><br>

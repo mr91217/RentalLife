@@ -51,6 +51,7 @@ public class SecurityConfiguration {
                                 .requestMatchers("/home").hasAnyRole("USER", "ADMIN")
                                 .requestMatchers("/landlord-dashboard").hasRole("LANDLORD")  // 仅允许房东访问
                                 .requestMatchers("/home").hasRole("TENANT")  // 仅允许租客访问
+
                                 .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

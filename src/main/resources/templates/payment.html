@@ -1,10 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Payment Form</title>
 </head>
 <body>
-<h1>Under Construction</h1>
+<h1>Payment Form</h1>
+<form action="/submit-payment" method="post" th:object="${payment}">
+    <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
+    <label for="property">Select Property:</label>
+    <select id="property" name="propertyId" required>
+        <!-- This should be populated with the tenant's properties -->
+        <option th:each="property : ${properties}" th:value="${property.id}" th:text="${property.address}"></option>
+    </select>
+
+    <label for="amount">Amount:</label>
+    <input type="number" id="amount" name="amount" required>
+
+    <button type="submit">Pay</button>
+</form>
 </body>
 </html>

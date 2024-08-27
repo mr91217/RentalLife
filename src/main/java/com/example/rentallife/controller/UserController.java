@@ -3,15 +3,14 @@ package com.example.rentallife.controller;
 import com.example.rentallife.dto.PropertyDTO;
 import com.example.rentallife.dto.UserDTO;
 import com.example.rentallife.entity.*;
-import com.example.rentallife.service.MaintenanceRequestService;
-import com.example.rentallife.service.PropertyService;
-import com.example.rentallife.service.UserService;
-import com.example.rentallife.service.UserServiceImpl;
+import com.example.rentallife.service.*;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 //import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -64,7 +63,7 @@ public class UserController {
             return "sign-up";
         }
         userDetailsService.creat(userDTO,userDTO.getUserType());
-        return "confirmation";
+        return "redirect:/home";
     }
     /**
      * In order to make code more readable  it is good practice to
@@ -105,14 +104,11 @@ public class UserController {
             return "redirect:/access-denied";
         }
     }
-    @GetMapping("/claim")
-    public String showClaimPage() {
-        return "claim";
+    @GetMapping("/help")
+    public String showHelpPage() {
+        return "help";
     }
-    @GetMapping("/payment")
-    public String showPaymentPage() {
-        return "payment";
-    }
+
     @Autowired
     private UserService userService;
     @GetMapping("/property-form")
@@ -310,6 +306,96 @@ public class UserController {
         List<MaintenanceRequest> requests = maintenanceRequestService.getRequestsForTenant(currentUser);
         model.addAttribute("requests", requests);
         return "maintenance-status-t";
+    }
+    @GetMapping("/edit-profile")
+    public String showEditProfileForm(Model model, Authentication authentication) {
+        User currentUser = userService.findUserByName(authentication.getName());
+        model.addAttribute("user", currentUser);
+        return "edit-profile";
+    }
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @PostMapping("/edit-profile")
+    public String updateProfile(@ModelAttribute("user") User user,
+                                @RequestParam("newPassword") String newPassword,
+                                @RequestParam("confirmPassword") String confirmPassword,
+                                BindingResult bindingResult,
+                                Authentication authentication) {
+
+        User currentUser = userService.findUserByName(authentication.getName());
+
+        // 验证新密码是否匹配
+        if (!newPassword.isEmpty()) {
+            if (newPassword.equals(confirmPassword)) {
+                // 使用密码编码器加密新密码
+                currentUser.setPassword(passwordEncoder.encode(newPassword));
+            } else {
+                bindingResult.rejectValue("password", "error.user", "Passwords do not match.");
+                return "edit-profile"; // 如果密码不匹配，返回编辑页面并显示错误
+            }
+        }
+
+        // 更新其他用户信息
+        currentUser.setFirstName(user.getFirstName());
+        currentUser.setLastName(user.getLastName());
+        currentUser.setEmail(user.getEmail());
+
+        userService.saveUser(currentUser); // 保存更新后的用户信息
+
+        return "redirect:/home"; // 更新成功后重定向
+    }
+    @Autowired
+    private PaymentService paymentService;
+
+    @GetMapping("/payment")
+    public String showPaymentForm(Model model, Authentication authentication) {
+        User currentUser = userService.findUserByName(authentication.getName());
+        List<Property> properties = propertyService.getPropertiesByTenant(currentUser);
+        model.addAttribute("properties", properties);
+        return "payment";
+    }
+
+
+    @PostMapping("/submit-payment")
+    public String submitPayment(@RequestParam("propertyId") Long propertyId,
+                                @RequestParam("amount") double amount,
+                                Authentication authentication) {
+        // 获取当前用户
+        User currentUser = userService.findUserByName(authentication.getName());
+        // 获取对应的 Property 对象
+        Property property = propertyService.findPropertyById(propertyId);
+
+
+        // 创建一个新的 Payment 对象并设置相关字段
+        Payment payment = new Payment();
+        payment.setProperty(property); // 设置关联的 Property 对象
+        payment.setTenant(currentUser); // 设置关联的 Tenant 对象
+        payment.setAmount(amount);
+        payment.setPaymentDate(LocalDateTime.now());
+
+        // 保存支付信息
+        paymentService.savePayment(payment);
+
+        return "redirect:/home";
+    }
+    // 租客查看自己的支付历史
+    @GetMapping("/tenant-payment-history")
+    public String getTenantPaymentHistory(Model model, Authentication authentication) {
+        User currentUser = userService.findUserByName(authentication.getName());
+        List<Payment> payments = paymentService.getPaymentsByTenant(currentUser.getId());
+        model.addAttribute("payments", payments);
+        return "tenant-payment-history";
+    }
+
+    // 房东查看自己管理的所有房产的支付历史
+    @GetMapping("/landlord-payment-history")
+    public String getLandlordPaymentHistory(Model model, Authentication authentication) {
+        User currentUser = userService.findUserByName(authentication.getName());
+        List<Payment> payments = paymentService.getPaymentsByLandlord(currentUser.getId());
+        model.addAttribute("payments", payments);
+        return "landlord-payment-history";
     }
 
 }

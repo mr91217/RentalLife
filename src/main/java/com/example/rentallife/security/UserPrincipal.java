@@ -33,6 +33,12 @@ public class UserPrincipal implements UserDetails {
     public String getUsername() {
         return this.user.getEmail();
     }
+
+    // 新增方法，用于获取用户的名字
+    public String getName() {
+        return this.user.getFirstName() + " " + this.user.getLastName();
+    }
+
     @Override
     public boolean isAccountNonExpired() {
         return true;
@@ -49,5 +55,6 @@ public class UserPrincipal implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
 }
 

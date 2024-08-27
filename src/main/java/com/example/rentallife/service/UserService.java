@@ -18,5 +18,6 @@ public interface UserService extends UserDetailsService {
     List<User> getAllLandlords();
     List<User> getAllTenants();
     User findUserById(Long id);
+    public User saveUser(User user);
 
 }
