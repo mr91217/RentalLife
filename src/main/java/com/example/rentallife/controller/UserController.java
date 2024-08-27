@@ -4,24 +4,41 @@ import com.example.rentallife.dto.PropertyDTO;
 import com.example.rentallife.dto.UserDTO;
 import com.example.rentallife.entity.*;
 import com.example.rentallife.service.*;
+
 import jakarta.servlet.http.HttpServletRequest;
+
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 //import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.security.core.Authentication;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
+import java.nio.file.AccessDeniedException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import org.springframework.core.io.Resource;
+
 
 
 @Controller
@@ -35,6 +52,9 @@ public class UserController {
         dataBinder.registerCustomEditor(String.class, stringTrimmerEditor);
     }
 
+    private final String UPLOAD_DIR = "/Users/lulutofulucas/Desktop/Java Projects/RentalLife/src/main/resources";
+    @Autowired
+    private UploadService uploadService;
     private UserServiceImpl userDetailsService;
     private final PropertyService propertyService;
     @Autowired
@@ -397,5 +417,87 @@ public class UserController {
         model.addAttribute("payments", payments);
         return "landlord-payment-history";
     }
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    @GetMapping("/upload")
+    public String signUpCompany(Model model){
+        List<User> tenants = userService.getAllTenants(); // 获取所有租户的逻辑
+        model.addAttribute("tenants", tenants);
+        model.addAttribute("upload", new FileUploadModel());
+        return "upload";
+    }
+
+    @PostMapping("/upload-success")
+    public String singUpProcess(@ModelAttribute("upload") FileUploadModel fileUploadModel,
+                                Model model,
+                                @RequestParam("file") MultipartFile file,
+                                @RequestParam("tenantId") Long tenantId,
+                                RedirectAttributes attributes,
+                                Authentication authentication) throws Exception {
+        if (file.isEmpty()) {
+            attributes.addFlashAttribute("message", "Please select a file to upload.");
+            return "redirect:/upload";
+        }
+        model.addAttribute(file);
+
+        // 获取当前登录用户 (房东)
+        User landlord = userService.findUserByName(authentication.getName());
+
+        // 获取租户对象
+        User tenant = userService.findUserById(tenantId);
+
+        // 生成文件名
+        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        log.debug("File name {} " + fileName);
+
+        // 调用上传服务，保存文件并将信息保存到数据库
+        uploadService.encryptPDFFile(UPLOAD_DIR, fileName, file,
+                UUID.randomUUID().toString(), landlord, tenant);
+
+        return "upload-success";
+    }
+    ///////////////for tenant to review or download///////////////////////////
+    @GetMapping("/tenant/download/{fileId}")
+    public ResponseEntity<Resource> downloadFile(@PathVariable Long fileId, Authentication authentication) throws IOException {
+        // 获取当前用户
+        User currentUser = userService.findUserByName(authentication.getName());
+
+        // 从数据库中获取文件信息
+        FileUploadModel fileUpload = uploadService.getFileById(fileId);
+
+        // 确保当前用户是文件的租户
+        if (!fileUpload.getTenant().getId().equals(currentUser.getId())) {
+            throw new AccessDeniedException("你无权访问此文件");
+        }
+
+        String filePath = fileUpload.getFilePath();
+        Path path = Paths.get(filePath);
+
+        // 加载文件资源
+        Resource resource = new UrlResource(path.toUri());
+        if (resource.exists() || resource.isReadable()) {
+            return ResponseEntity.ok()
+                    .contentType(MediaType.APPLICATION_PDF)
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileUpload.getFileName() + "\"")
+                    .body(resource);
+        } else {
+            throw new RuntimeException("无法读取文件: " + filePath);
+        }
+    }
+    @GetMapping("/tenant-files")
+    public String listTenantFiles(Model model, Authentication authentication) {
+        User currentUser = userService.findUserByName(authentication.getName());
+        List<FileUploadModel> files = uploadService.findFilesByTenantId(currentUser.getId());
+        model.addAttribute("files", files);
+        return "tenant-files";
+    }
+
+
+
+
+
+
+
+
+
 
 }
