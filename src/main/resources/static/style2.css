@@ -81,12 +81,12 @@
     text-align: left;          /* 使表头文本左对齐 */
 }
 
-.table tr:nth-child(even) {
-    background-color: #f9f9f9; /* 为偶数行添加不同的背景颜色 */
-}
+/*.table tr:nth-child(even) {*/
+/*    background-color: #f9f9f9; !* 为偶数行添加不同的背景颜色 *!*/
+/*}*/
 
 .table tr:hover {
-    background-color: #ddd; /* 当鼠标悬停在行上时，改变背景颜色 */
+    background-color: #f9f9f9; /* 当鼠标悬停在行上时，改变背景颜色 */
 }
 
 .high-scores-title {

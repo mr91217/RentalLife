@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tenant Files</title>
+    <link rel="stylesheet" href="/leasepagestyle.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Grey+Qo&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap">
+
+</head>
+<body style="display: flex; flex-direction: column; background-image: url('/images/landlord-dashboard.WEBP'); background-size: cover; background-position: center; background-repeat: no-repeat; min-height: 100vh;">
+<header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light" style="font-family: 'Roboto', sans-serif; background-color: transparent !important;">
+        <div class="container-fluid">
+            <a class="navbar-brand" th:href="@{/dashboard}">
+                <img th:src="@{/images/rentallife.jpg}" alt="Dashboard Logo" style="height: 40px;">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav ml-auto">
+
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/maintenance-requests}">Maintenance Status</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/landlord-payment-history}">Payment History</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="property-form">Add Property</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="assign-tenant">Assign Tenant</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="upload">Upload File</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/landlord-files}">Files</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            More
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+
+                            <li><a class="dropdown-item" th:href="@{/edit-profile}">Settings</a></li>
+                            <li><a class="dropdown-item" th:href="help">Help</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+<div>
+    <div class="container">
+    <h1>Available Files</h1>
+    </div>
+    <p>Below are the files available for download:</p>
+    <table class="table table-striped" style="background-color: rgba(255, 255, 255, 0.8);">
+        <thead>
+        <tr>
+            <th>File Name</th>
+            <th>Download Link</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Here we'll loop through files -->
+        <tr th:each="file : ${files}">
+            <td th:text="${file.fileName}"></td>
+            <td>
+                <a th:href="@{'/tenant/download/' + ${file.id}}">Download</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+</body>
+</html>

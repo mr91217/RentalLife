@@ -46,7 +46,10 @@ public class SecurityConfiguration {
         http
                 .authorizeHttpRequests(
                         (auth) -> auth
-                                .requestMatchers("/", "/login*",
+
+
+
+                                .requestMatchers("/", "/login*", "/images/*",
                                         "/css/*", "/js/*", "/sign-up", "/signup-process").permitAll()
                                 .requestMatchers("/home").hasAnyRole("USER", "ADMIN")
                                 .requestMatchers("/landlord-dashboard").hasRole("LANDLORD")  // 仅允许房东访问

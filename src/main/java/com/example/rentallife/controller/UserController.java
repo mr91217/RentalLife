@@ -495,7 +495,7 @@ public class UserController {
         User currentUser = userService.findUserByName(authentication.getName());
         List<FileUploadModel> files = uploadService.findFilesByLandlordId(currentUser.getId());
         model.addAttribute("files", files);
-        return "tenant-files";
+        return "landlord-files";
     }
 
 

@@ -1,28 +1,71 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Help</title>
+
+    <style>
+        body, html {
+            background: linear-gradient(to bottom right, #ecdcc3, #cbb296);
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        .container {
+            margin-top: 200px;
+            width: 400px;
+            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            text-align: center;
+
+        }
+
+        .icon-links {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .icon-links img {
+            margin: 0 10px;
+        }
+        footer {
+            position: fixed;
+            bottom: 150px;
+            width: 100%;
+            background-color: transparent;
+            padding: 10px 0;
+        }
+    </style>
 </head>
 <body>
-<div className="container">
-    <div className="row">
-        <div className="col text-center py-4">
-            <a href="https://github.com/mr91217" id="profile-link" >
-                <img className="contact-icon"
-                     src={github}  alt="github_icon" />
-            </a>
-            <a href="https://www.linkedin.com/in/chunyu-chang-9613a920a/" id="linkedin-link" >
-                <img
-                        className="contact-icon" src={linkin}  alt="linkedin_icon" />
-            </a>
-            <a href="mailto:mr91217@gmail.com?subject=We are looking for a software developer like you!"
-               id="envelope-link">
-                <img className="contact-icon" src={envelope}  alt="envelope_icon" />
-            </a>
-
-        </div>
+<div class="container">
+    <div>
+        <a class="navbar-brand" th:href="@{/dashboard}">
+            <img th:src="@{/images/rentallife.jpg}" alt="Logo" style="max-width: 400px;">
+        </a>
     </div>
+
+
 </div>
+<footer>
+    <div class="icon-links">
+        <a href="https://github.com/mr91217" id="profile-link">
+            <img th:src="@{/images/github.png}" alt="github_icon" style="max-width: 200px;"/>
+        </a>
+        <a href="https://www.linkedin.com/in/chunyu-chang-9613a920a/" id="linkedin-link">
+            <img th:src="@{/images/linkedin.png}" alt="linkedin_icon" style="max-width: 200px;"/>
+        </a>
+        <a href="mailto:mr91217@gmail.com?subject=We are looking for a software developer like you!"
+           id="envelope-link">
+            <img th:src="@{/images/email.png}" alt="envelope_icon" style="max-width: 200px;" />
+        </a>
+    </div>
+
+</footer>
 </body>
 </html>
