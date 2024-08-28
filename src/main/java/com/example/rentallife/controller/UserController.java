@@ -490,7 +490,7 @@ public class UserController {
         model.addAttribute("files", files);
         return "tenant-files";
     }
-    @GetMapping("/tenant-files-landlord")
+    @GetMapping("/landlord-files")
     public String listTenantFilesforLandlord(Model model, Authentication authentication) {
         User currentUser = userService.findUserByName(authentication.getName());
         List<FileUploadModel> files = uploadService.findFilesByLandlordId(currentUser.getId());
