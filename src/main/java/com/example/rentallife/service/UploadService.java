@@ -91,5 +91,11 @@ public class UploadService {
         // 调用 repository 方法，根据租户查找文件
         return fileUploadRepository.findByTenant(tenant);
     }
+    public List<FileUploadModel> findFilesByLandlordId(Long landlordId) {
+        // get landlord
+        User landlord = userService.findUserById(landlordId);
+        // 调用 repository 方法，根据租户查找文件
+        return fileUploadRepository.findByLandlord(landlord);
+    }
 }
 

@@ -466,7 +466,7 @@ public class UserController {
 
         // 确保当前用户是文件的租户
         if (!fileUpload.getTenant().getId().equals(currentUser.getId())) {
-            throw new AccessDeniedException("你无权访问此文件");
+            throw new AccessDeniedException("Denied");
         }
 
         String filePath = fileUpload.getFilePath();
@@ -480,13 +480,20 @@ public class UserController {
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileUpload.getFileName() + "\"")
                     .body(resource);
         } else {
-            throw new RuntimeException("无法读取文件: " + filePath);
+            throw new RuntimeException("The file is not available : " + filePath);
         }
     }
     @GetMapping("/tenant-files")
     public String listTenantFiles(Model model, Authentication authentication) {
         User currentUser = userService.findUserByName(authentication.getName());
         List<FileUploadModel> files = uploadService.findFilesByTenantId(currentUser.getId());
+        model.addAttribute("files", files);
+        return "tenant-files";
+    }
+    @GetMapping("/tenant-files-landlord")
+    public String listTenantFilesforLandlord(Model model, Authentication authentication) {
+        User currentUser = userService.findUserByName(authentication.getName());
+        List<FileUploadModel> files = uploadService.findFilesByLandlordId(currentUser.getId());
         model.addAttribute("files", files);
         return "tenant-files";
     }
