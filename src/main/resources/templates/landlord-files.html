@@ -14,14 +14,12 @@
 <header>
     <nav class="navbar navbar-expand-lg navbar-light bg-light" style="font-family: 'Roboto', sans-serif; background-color: transparent !important;">
         <div class="container-fluid">
-            <a class="navbar-brand" th:href="@{/dashboard}">
-                <img th:src="@{/images/rentallife.jpg}" alt="Dashboard Logo" style="height: 40px;">
-            </a>
+
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNavDropdown">
-                <ul class="navbar-nav ml-auto">
+                <ul class="navbar-nav ml-auto" style="font-size: 1.5rem;">
 
                     <li class="nav-item">
                         <a class="nav-link" th:href="@{/maintenance-requests}">Maintenance Status</a>
@@ -53,27 +51,30 @@
                         </ul>
                     </li>
                 </ul>
+                <a class="navbar-brand ms-auto" th:href="@{/dashboard}">
+                    <img th:src="@{/images/rentallife.jpg}" alt="Dashboard Logo" style="height: 80px;">
+                </a>
             </div>
         </div>
     </nav>
 </header>
-<div>
-    <div class="container">
+<div class="container" style="background-color: rgba(255, 255, 255, 0.8);">
+
     <h1>Available Files</h1>
-    </div>
+
     <p>Below are the files available for download:</p>
-    <table class="table table-striped" style="background-color: rgba(255, 255, 255, 0.8);">
+    <table class="table table-striped table-bordered" style="background-color: rgba(255, 255, 255, 0.8); text-align: center;">
         <thead>
         <tr>
-            <th>File Name</th>
-            <th>Download Link</th>
+            <th style="border: 1px solid #000000;">File Name</th>
+            <th style="border: 1px solid #000000;">Download Link</th>
         </tr>
         </thead>
         <tbody>
         <!-- Here we'll loop through files -->
         <tr th:each="file : ${files}">
-            <td th:text="${file.fileName}"></td>
-            <td>
+            <td style="border: 1px solid #000000;" th:text="${file.fileName}"></td>
+            <td style="border: 1px solid #000000;">
                 <a th:href="@{'/tenant/download/' + ${file.id}}">Download</a>
             </td>
         </tr>

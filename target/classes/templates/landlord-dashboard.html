@@ -14,14 +14,12 @@
 <header>
     <nav class="navbar navbar-expand-lg navbar-light bg-light" style="font-family: 'Roboto', sans-serif; background-color: transparent !important;">
         <div class="container-fluid">
-            <a class="navbar-brand" th:href="@{/dashboard}">
-                <img th:src="@{/images/rentallife.jpg}" alt="Dashboard Logo" style="height: 40px;">
-            </a>
+
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNavDropdown">
-                <ul class="navbar-nav ml-auto">
+                <ul class="navbar-nav ml-auto" style="font-size: 1.5rem;">
 
                     <li class="nav-item">
                         <a class="nav-link" th:href="@{/maintenance-requests}">Maintenance Status</a>
@@ -53,39 +51,44 @@
                         </ul>
                     </li>
                 </ul>
+                <a class="navbar-brand ms-auto" th:href="@{/dashboard}">
+                    <img th:src="@{/images/rentallife.jpg}" alt="Dashboard Logo" style="height: 80px;">
+                </a>
             </div>
         </div>
     </nav>
 </header>
 
-<h2>Welcome, Landlord <span sec:authentication="principal.name"></span>!</h2>
-<div>
+
+<div style="width: 80%; margin: 0 auto;">
+    <h2>Welcome, Landlord <span sec:authentication="principal.name"></span>!</h2>
     <h3>Your Properties and Tenants</h3>
-    <table class="table table-striped" style="background-color: rgba(255, 255, 255, 0.8);">
+    <br>
+    <table class="table table-striped table-bordered" style="background-color: rgba(255, 255, 255, 0.8); text-align: left; width: 100%; margin:0 auto; display:block;">
         <thead>
         <tr>
-            <th>Address</th>
-            <th>City</th>
-            <th>State</th>
-            <th>Zip</th>
-            <th>Rooms</th>
-            <th>Price</th>
-            <th>Term</th>
-            <th>Tenants</th>
-            <th>Modify</th>
-            <th>Management</th>
+            <th style="border: 1px solid #000000;">Address</th>
+            <th style="border: 1px solid #000000;">City</th>
+            <th style="border: 1px solid #000000;">State</th>
+            <th style="border: 1px solid #000000;">Zip</th>
+            <th style="border: 1px solid #000000;">Rooms</th>
+            <th style="border: 1px solid #000000;">Price</th>
+            <th style="border: 1px solid #000000;">Term</th>
+            <th style="border: 1px solid #000000;">Tenants</th>
+            <th style="border: 1px solid #000000;">Modify</th>
+            <th style="border: 1px solid #000000;">Management</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="property : ${properties}">
-            <td th:text="${property.address}"></td>
-            <td th:text="${property.city}"></td>
-            <td th:text="${property.state}"></td>
-            <td th:text="${property.zip}"></td>
-            <td th:text="${property.rooms}"></td>
-            <td th:text="${property.price}"></td>
-            <td th:text="${property.term}"></td>
-            <td>
+            <td style="border: 1px solid #000000;" th:text="${property.address}"></td>
+            <td style="border: 1px solid #000000;" th:text="${property.city}"></td>
+            <td style="border: 1px solid #000000;" th:text="${property.state}"></td>
+            <td style="border: 1px solid #000000;" th:text="${property.zip}"></td>
+            <td style="border: 1px solid #000000;" th:text="${property.rooms}"></td>
+            <td style="border: 1px solid #000000;" th:text="${property.price}"></td>
+            <td style="border: 1px solid #000000;" th:text="${property.term}"></td>
+            <td style="border: 1px solid #000000;">
 
                 <ul>
                     <li th:if="${#lists.isEmpty(propertyTenantsMap[property.id])}">
@@ -97,10 +100,10 @@
                     </li>
                 </ul>
             </td>
-            <td>
+            <td style="border: 1px solid #000000;">
                 <a th:href="@{/edit-property/{id}(id=${property.id})}" class="btn btn-sm btn-warning">Edit</a>
             </td>
-            <td>
+            <td style="border: 1px solid #000000;">
                 <form th:action="@{/delete-property/{id}(id=${property.id})}" method="post">
                     <button type="submit" class="btn btn-danger">Delete</button>
                 </form>
